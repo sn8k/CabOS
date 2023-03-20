@@ -9,7 +9,7 @@ if not "%1"=="am_admin" (
 
 
 ::purely cosmetic. Must be on top.
-set version=1.51-beta
+set version=1.52-beta
 set reboot_command=shutdown -r -t 
 title CabOS Launcher Ver. %version% - please Wait.
 
@@ -153,7 +153,7 @@ goto EOF
 call explorer.exe
 echo if you don't want to reboot, close this windows...
 echo.
-timeout 5
+timeout 10
 
 goto reboot_part
 goto EOF
