@@ -9,7 +9,7 @@ if not "%1"=="am_admin" (
 
 
 ::purely cosmetic. Must be on top.
-set version=1.50-beta
+set version=1.51-beta
 set reboot_command=shutdown -r -t 
 title CabOS Launcher Ver. %version% - please Wait.
 
@@ -30,8 +30,9 @@ set Alt_drive=F:
 set binaries=d:\binaries
 
 ::Updater settings
-set update_url=http://jengabazinga.free.fr/arcade/version.run
-
+set update_url=https://raw.githubusercontent.com/sn8k/CabOS/main/version.run
+set runner_url=https://github.com/sn8k/CabOS/raw/main/runner.cmd
+set zipped_url=https://github.com/sn8k/CabOS/archive/refs/heads/main.zip
 
 ::Used for error argument.
 if exist "%Alt_drive%\" (set F_present=yes)
@@ -92,7 +93,9 @@ if "%update_in_progress%"=="" (del c:\temp\updated.cmd)
 
 powershell invoke-webrequest "%update_url%" -outFile "%system_drive%\temp\version.run"
 set /P server_version=<%system_drive%\temp\version.run
-if "%server_version%"=="%version%" (goto no_update_found) ELSE (powershell invoke-webrequest "http://jengabazinga.free.fr/arcade/runner.cmd" -outFile "%system_drive%\temp\runner.cmd" & goto update_found)
+if "%server_version%"=="%version%" (goto no_update_found) ELSE (powershell invoke-webrequest "%runner_url%" -outFile "%system_drive%\temp\runner.cmd" & goto update_found)
+
+if not exist "%system_drive%\temp\runner.cmd" (powershell invoke-webrequest "%zipped_url%" -outFile "%system_drive%\temp\zipped.zip"
 if "%update_in_progress%"=="yes" (goto update_install)
 goto EOF
 
@@ -109,7 +112,11 @@ del "c:\service\runner.cmd" /Q
 copy "c:\service\updated.cmd" "c:\service\runner.cmd"
 set update_in_progress=no
 echo Updating process finished. 
-echo Restarting Arcade Cabinet now! 
+echo.
+echo now you're at version %version%
+echo.
+echo Restarting Arcade Cabinet now!
+
 %reboot_command%5
 goto EOF
 
