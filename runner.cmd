@@ -6,8 +6,10 @@ if not "%1"=="am_admin" (
     exit /b
 )
 
-::for debug only
-pause
+::for debug only. Activate the line below stop runner from autolaunching when updated from github.
+
+::echo GITHUB PAUSE REQUESTED && pause
+
 ::purely cosmetic. Must be on top.
 set version=1.53-beta
 set reboot_command=shutdown -r -t 
