@@ -7,11 +7,10 @@ if not "%1"=="am_admin" (
 )
 
 ::for debug only. Activate the line below stop runner from autolaunching when updated from github.
+::echo GITHUB PAUSE REQUESTED && pause
 
-echo GITHUB PAUSE REQUESTED && pause
-
-::purely cosmetic. Must be on top.
-set version=1.53-beta
+:: Must be on top.
+set version=1.54-beta
 set reboot_command=shutdown -r -t 
 title CabOS Launcher Ver. %version% - please Wait.
 
@@ -70,8 +69,12 @@ if not exist E:\DATA (
 	Goto Error_part
 	)
 
+GOTO startup
 
-	
+::Startup Windows.
+
+:startup	
+color 17
 echo Arcade Cabinet Launcher V%version%
 echo.
 echo.
@@ -81,27 +84,30 @@ echo %DATE% %TIME%>"%system_drive%\temp\WritedEnabled.yan"
 echo.
 echo Checking Updates ...
 echo.
+goto updater_check
 
 echo Looking for missing plugins ..
 
 
-goto updater_check
 goto EOF
 
 :updater_check
 ::1st clean stage .
 del c:\temp\version.* /Q
-if "%update_in_progress%"=="" (del c:\temp\updated.cmd)
+if "%update_in_progress%"=="" ( del c:\temp\updated.cmd )
 
 powershell invoke-webrequest "%update_url%" -outFile "%system_drive%\temp\version.run"
 set /P server_version=<%system_drive%\temp\version.run
-if "%server_version%"=="%version%" (goto no_update_found) ELSE (powershell invoke-webrequest "%runner_url%" -outFile "%system_drive%\temp\runner.cmd" & goto update_found)
+if "%server_version%"=="%version%" ( goto no_update_found ) ELSE ( powershell invoke-webrequest "%runner_url%" -outFile "%system_drive%\temp\runner.cmd" & goto update_found )
 
-if not exist "%system_drive%\temp\runner.cmd" (powershell invoke-webrequest "%zipped_url%" -outFile "%system_drive%\temp\zipped.zip"
-if "%update_in_progress%"=="yes" (goto update_install)
+if not exist "%system_drive%\temp\runner.cmd" ( powershell invoke-webrequest "%zipped_url%" -outFile "%system_drive%\temp\zipped.zip" )
+if "%update_in_progress%"=="yes" ( goto update_install )
+if "%update_in_progress%"=="no" ( del c:\service\updated.cmd /Q )
+
 goto EOF
 
 :update_found
+color 34
 echo an update has been found !
 echo installing it inconditionnaly ...
 copy "%system_drive%\temp\runner.cmd" "c:\service\updated.cmd" /Y
@@ -144,6 +150,7 @@ start "" "%binaries%\Xbox360ce\x360ce.exe.lnk"
 timeout 15
 if "%1"=="test" goto test
 
+:launch_emul
 echo.
 Echo going to %emul_name% folder
 cd /D "%coinops_path%" 
@@ -152,12 +159,20 @@ goto exit_part
 goto EOF
 
 :exit_part
+if exist "%system_drive%\temp\attempt.run" (
+	set /P attempt=<"%system_drive%\temp\attempt.run 
+	)
+
 call explorer.exe
-echo if you don't want to reboot, close this windows...
+echo Relaunching coinOPS ...
+if "%attempt%"=="" (echo 1>"%system_drive%\temp\attempt.run")
+if "%attempt%"=="1" (echo 2>"%system_drive%\temp\attempt.run")
+if "%attempt%"=="2" (echo 3>"%system_drive%\temp\attempt.run")
+if "%attempt%"=="3" (goto reboot_part)
+
 echo.
 timeout 10
-
-goto reboot_part
+goto launch_emul
 goto EOF
 
 
@@ -175,6 +190,7 @@ goto EOF
 
 :error_part
 cls
+color 47
 echo An error has been found !
 echo.
 echo Running Diagnostics....
