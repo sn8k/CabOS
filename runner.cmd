@@ -9,7 +9,7 @@ if not "%1"=="am_admin" (
 ::for debug only
 pause
 ::purely cosmetic. Must be on top.
-set version=1.52-beta
+set version=1.53-beta
 set reboot_command=shutdown -r -t 
 title CabOS Launcher Ver. %version% - please Wait.
 
