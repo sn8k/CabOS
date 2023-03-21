@@ -10,7 +10,7 @@ if not "%1"=="am_admin" (
 ::echo GITHUB PAUSE REQUESTED && pause
 
 :: Must be on top.
-set version=1.54-beta
+set version=1.55-beta
 set reboot_command=shutdown -r -t 
 title CabOS Launcher Ver. %version% - please Wait.
 
@@ -160,14 +160,14 @@ goto EOF
 
 :exit_part
 if exist "%system_drive%\temp\attempt.run" (
-	set /P attempt=<"%system_drive%\temp\attempt.run 
+	set /P attempt=<"%system_drive%\temp\attempt.run"
 	)
 
 call explorer.exe
 echo Relaunching coinOPS ...
-if "%attempt%"=="" (echo 1>"%system_drive%\temp\attempt.run")
-if "%attempt%"=="1" (echo 2>"%system_drive%\temp\attempt.run")
-if "%attempt%"=="2" (echo 3>"%system_drive%\temp\attempt.run")
+if "%attempt%"=="" ( echo 1 > "%system_drive%\temp\attempt.run")
+if "%attempt%"=="1" ( echo 2 > "%system_drive%\temp\attempt.run")
+if "%attempt%"=="2" ( echo 3 > "%system_drive%\temp\attempt.run")
 if "%attempt%"=="3" (goto reboot_part)
 
 echo.
