@@ -6,8 +6,8 @@ if not "%1"=="am_admin" (
     exit /b
 )
 
-
-
+::for debug only
+pause
 ::purely cosmetic. Must be on top.
 set version=1.52-beta
 set reboot_command=shutdown -r -t 
